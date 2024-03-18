@@ -1,41 +1,21 @@
-import React, { useEffect } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import OnboardingScreen from './path/to/OnboardingScreen';
-import HomeScreen from './path/to/HomeScreen';
+import React from 'react';
+import { StyleSheet, Text, View } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
 
-const Stack = createNativeStackNavigator();
-
-const App = () => {
-  const [isFirstLaunch, setIsFirstLaunch] = React.useState<boolean | null>(null);
-
-  useEffect(() => {
-    AsyncStorage.getItem('alreadyLaunched').then(value => {
-      if (value === null) {
-        AsyncStorage.setItem('alreadyLaunched', 'true'); // Mark as launched
-        setIsFirstLaunch(true);
-      } else {
-        setIsFirstLaunch(false);
-      }
-    });
-  }, []);
-
-  if (isFirstLaunch === null) {
-    return null; // or a loading indicator
-  }
-
+export default function App() {
   return (
-    <NavigationContainer>
-      <Stack.Navigator>
-        {isFirstLaunch ? (
-          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
-        ) : (
-          <Stack.Screen name="Home" component={HomeScreen} />
-        )}
-      </Stack.Navigator>
-    </NavigationContainer>
+    <View style={styles.container}>
+      <Text>Open up App.tsx to start working on your app!</Text>
+      <StatusBar style="auto" />
+    </View>
   );
-};
+}
 
-export default App;
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

@@ -1,34 +1,43 @@
-import { StyleSheet, Text, View } from "react-native";
+import React, { useEffect } from 'react';
+import { NavigationContainer } from '@react-navigation/native';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import OnboardingScreen from './src/screen/OnboardingScreen';
+import HomeScreen from './src/screen/HomeScreen';
 
-export default function Page() {
+const Stack = createNativeStackNavigator();
+
+const App = () => {
+  const [isFirstLaunch, setIsFirstLaunch] = React.useState<boolean | null>(null);
+
+  useEffect(() => {
+    AsyncStorage.getItem('alreadyLaunched').then(value => {
+      if (value === null) {
+        AsyncStorage.setItem('alreadyLaunched', 'true'); // Mark as launched
+        setIsFirstLaunch(true);
+      } else {
+        setIsFirstLaunch(false);
+      }
+    });
+  }, []);
+
+  if (isFirstLaunch === null) {
+    return null; // or a loading indicator
+  }
+
+ //setIsFirstLaunch(true);
+
   return (
-    <View style={styles.container}>
-      <View style={styles.main}>
-        <Text style={styles.title}>Hello World</Text>
-        <Text style={styles.subtitle}>This is the first page of your app.</Text>
-      </View>
-    </View>
+    // <NavigationContainer>
+      <Stack.Navigator>
+        {isFirstLaunch ? (
+          <Stack.Screen name="Onboarding" component={OnboardingScreen} />
+        ) : (
+          <Stack.Screen name="Home" component={HomeScreen} />
+        )}
+      </Stack.Navigator>
+    // </NavigationContainer>
   );
-}
+};
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    padding: 24,
-  },
-  main: {
-    flex: 1,
-    justifyContent: "center",
-    maxWidth: 960,
-    marginHorizontal: "auto",
-  },
-  title: {
-    fontSize: 64,
-    fontWeight: "bold",
-  },
-  subtitle: {
-    fontSize: 36,
-    color: "#38434D",
-  },
-});
+export default App;
